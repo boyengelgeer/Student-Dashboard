@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import Header from "./components/Header";
+import StudentButtons from "./components/StudentButtons";
+import StudentChart from "./components/StudentChart";
+import Footer from "./components/Footer";
+import SortChartButtons from "./components/SortChartButtons";
+import { csv } from 'd3'
+
 
 function App() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    csv('data.csv').then(setData);
+  }, []);
+
+  console.log(data);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Header />
+      <StudentButtons />
+      <StudentChart />
+      <SortChartButtons />
+      <Footer />
     </div>
   );
 }
