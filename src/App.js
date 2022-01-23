@@ -2,27 +2,50 @@ import React, { useEffect, useState } from "react";
 import Header from "./components/Header";
 import StudentChart from "./components/StudentChart";
 import Footer from "./components/Footer";
-import Home from "./components/Home";
-import SortChartButtons from "./components/SortChartButtons";
 import { BrowserRouter as Router, Switch, Route, Routes } from "react-router-dom";
 import students from "./components/utils";
-
 function App() {
 
   const [data, setData] = useState(students)
 
-  console.log(data)
+  const groupByAssignment = (objectArray, property) => {
+    return objectArray.reduce(
+      (prevValue, { assignment, difficultyRating, funRating, [property]: key }) => {
+        if (!prevValue[key]) {
+          prevValue[key] = {
+            assignment: assignment,
+            difficultyRatingAvg: difficultyRating,
+            funRatingAvg: funRating,
+            count: 1
+          };
+        } else {
+          const { count, difficultyRatingAvg, funRatingAvg } = prevValue[key];
+          prevValue[key] = {
+            assignment: assignment,
+            difficultyRatingAvg:
+              (difficultyRatingAvg + difficultyRating) /
+              (count + 1),
+            funRatingAvg: (funRatingAvg + funRating) / (count + 1),
+            count: count + 1,
+          };
+        }
+        return prevValue;
+      },
+      {}
+    );
+  };
+
+  let groupByAssignmentByAverage = groupByAssignment(students, "assignment");
+
+  console.log(groupByAssignmentByAverage);
 
   return (
     <Router>
-      <div>
-        <Header />
-        <Routes>
-          <Route path="/" element={<StudentChart data={data} />} />
-        </Routes>
-        <SortChartButtons />
-        <Footer />
-      </div>
+      <Header />
+      <Routes>
+        <Route path="/" element={<StudentChart data={data} />} />
+      </Routes>
+      <Footer />
     </Router>
   );
 }

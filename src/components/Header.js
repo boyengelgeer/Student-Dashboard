@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 
 
@@ -11,7 +12,7 @@ function Header() {
             <h4>Student Dashboard by Winc Academy</h4>
         </div>
         <div className="text-center">
-            <div className="btn-group flex-wrap">
+            <div className="btn-group flex-wrap">               
                 <button type="button" className="btn btn-secondary">Aranka</button>
                 <button type="button" className="btn btn-secondary">Evelyn</button>
                 <button type="button" className="btn btn-secondary">Floris</button>
