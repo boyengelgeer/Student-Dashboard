@@ -13,6 +13,46 @@ import students from "./utils";
 
 function StudentChart(props) {
 
+    console.log(props.data)
+
+    const groupByAssignment = (objectArray, property) => {
+        return objectArray.reduce(
+            (prevValue, { assignment, difficultyRating, funRating, [property]: key }) => {
+                if (!prevValue[key]) {
+                    prevValue[key] = {
+                        assignment: assignment,
+                        difficultyRatingAvg: difficultyRating,
+                        funRatingAvg: funRating,
+                        count: 1
+                    };
+                } else {
+                    const { count, difficultyRatingAvg, funRatingAvg } = prevValue[key];
+                    prevValue[key] = {
+                        assignment: assignment,
+                        difficultyRatingAvg:
+                            (difficultyRatingAvg + difficultyRating) /
+                            (count + 1),
+                        funRatingAvg: (funRatingAvg + funRating) / (count + 1),
+                        count: count + 1,
+                    };
+                }
+                return prevValue;
+            },
+            {}
+        );
+    };
+
+
+
+    let groupByAssignmentByAverage = groupByAssignment(students, "assignment");
+
+    var groupByAssignmentByAverageWithKey = Object.keys(groupByAssignmentByAverage).map(key => {
+        return groupByAssignmentByAverage[key];
+    })
+
+    console.log(groupByAssignmentByAverageWithKey)
+
+
     let [searchParams, setSearchParams] = useSearchParams();
     let navigate = useNavigate()
 
@@ -61,9 +101,9 @@ function StudentChart(props) {
                         },
                     }}
                     barWidth={2}
-                    data={props.data}
+                    data={groupByAssignmentByAverageWithKey}
                     x="assignment"
-                    y="difficultyRating"
+                    y="difficultyRatingAvg"
                 />
                 )}
 
@@ -75,9 +115,9 @@ function StudentChart(props) {
                         },
                     }}
                     barWidth={2}
-                    data={props.data}
+                    data={groupByAssignmentByAverageWithKey}
                     x="assignment"
-                    y="funRating"
+                    y="funRatingAvg"
                 />
                 )}
 
