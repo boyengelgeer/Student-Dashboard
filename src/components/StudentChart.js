@@ -1,7 +1,7 @@
 import React from "react";
 import {
     VictoryBar, VictoryChart, VictoryAxis,
-    VictoryGroup, VictoryLabel,
+    VictoryGroup, VictoryLabel, VictoryZoomContainer
 } from 'victory';
 import { useSearchParams } from "react-router-dom"
 import { useNavigate, useParams } from "react-router";
@@ -11,9 +11,6 @@ import students from "./utils";
 
 
 function StudentChart(props) {
-
-    var pathArray = window.location.pathname.split('/');
-    var newPathname = pathArray.join("/");
 
     const assignments = new Set();
     students.forEach(student => {
@@ -84,11 +81,13 @@ function StudentChart(props) {
 
             </div >
 
-            <div>
+            <div className="flex-wrap">
                 <VictoryChart
                     domainPadding={{ x: [10, 0], y: 0 }}
                     padding={{ top: 20, bottom: 50, right: 50, left: 30 }}
                     height={170}
+                    containerComponent={<VictoryZoomContainer />}
+
                 >
 
                     <VictoryAxis
@@ -146,7 +145,7 @@ function StudentChart(props) {
                 <div className="text-center">
                     <div className="btn-group flex-wrap">
                         <button type="button" className="btn btn-danger" onClick={() => navigate(`${window.location.pathname}?filter=difficulty`)}>Filter by difficulty</button>
-                        <button type="button" className="btn btn-dark" onClick={() => navigate(`${window.location.pathname}/?filter=fun`)}>Filter by fun</button>
+                        <button type="button" className="btn btn-dark" onClick={() => navigate(`${window.location.pathname}?filter=fun`)}>Filter by fun</button>
                         <button type="button" className="btn btn-secondary" onClick={() => navigate(`/`)}>Back to home</button>
 
                     </div>
