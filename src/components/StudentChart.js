@@ -12,6 +12,9 @@ import students from "./utils";
 
 function StudentChart(props) {
 
+    var pathArray = window.location.pathname.split('/');
+    var newPathname = pathArray.join("/");
+
     const assignments = new Set();
     students.forEach(student => {
         assignments.add(student.assignment);
@@ -142,13 +145,13 @@ function StudentChart(props) {
                 </VictoryChart>
                 <div className="text-center">
                     <div className="btn-group flex-wrap">
-                        <button type="button" className="btn btn-danger" onClick={() => navigate(`/?filter=difficulty`)}>Filter by difficulty</button>
-                    <button type="button" className="btn btn-dark" onClick={() => navigate(`/?filter=fun`)}>Filter by fun</button>
-                    <button type="button" className="btn btn-secondary" onClick={() => navigate(`/`)}>Back to home</button>
+                        <button type="button" className="btn btn-danger" onClick={() => navigate(`${window.location.pathname}?filter=difficulty`)}>Filter by difficulty</button>
+                        <button type="button" className="btn btn-dark" onClick={() => navigate(`${window.location.pathname}/?filter=fun`)}>Filter by fun</button>
+                        <button type="button" className="btn btn-secondary" onClick={() => navigate(`/`)}>Back to home</button>
 
+                    </div>
                 </div>
             </div>
-        </div>
         </div >
     )
 }
