@@ -6,9 +6,9 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import students from "./components/utils";
 function App() {
 
-  const [data, setData] = useState(students)
+  const [data] = useState(students)
 
- 
+
 
   return (
     <Router>

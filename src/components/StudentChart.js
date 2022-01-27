@@ -1,16 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     VictoryBar, VictoryChart, VictoryAxis,
-    VictoryGroup, VictoryLabel, VictoryZoomContainer
+    VictoryGroup, VictoryLabel
 } from 'victory';
 import { useSearchParams } from "react-router-dom"
 import { useNavigate, useParams } from "react-router";
 import students from "./utils";
+import SortChartButtons from "./SortChartButtons";
 
 
 
 
-function StudentChart(props) {
+function StudentChart() {
+
+    let navigate = useNavigate()
+
+    let [difficultyChecked, setDifficultyChecked] = useState(false)
+    let [funChecked, setFunChecked] = useState(false)
+
+    let [selectedStudentName, setSelectedStudentName] = useState(null)
+
+    function onDifficultyToggle() {
+        setDifficultyChecked(!difficultyChecked)
+
+        navigate(`${window.location.pathname}${!difficultyChecked ? '?filter=difficulty' : ''}`)
+    }
+
+    function onFunToggle() {
+        setFunChecked(!funChecked)
+
+        navigate(`${window.location.pathname}${!funChecked ? '?filter=fun' : ''}`)
+
+    }
+
+    function onHomeClick() {
+        navigate(`/`)
+        setSelectedStudentName()
+
+    }
+
+    const studentNames = new Set();
+    students.forEach(student => {
+        studentNames.add(student.name);
+    })
 
     const assignments = new Set();
     students.forEach(student => {
@@ -35,8 +67,8 @@ function StudentChart(props) {
         }
     });
 
-    let [searchParams, setSearchParams] = useSearchParams();
-    let navigate = useNavigate()
+    let [searchParams] = useSearchParams();
+
 
     const filter = searchParams.get("filter")
     const { studentId } = useParams()
@@ -55,28 +87,35 @@ function StudentChart(props) {
 
     if (selectedStudent.length > 0) {
         graphData = selectedStudent;
-        console.log('student data', graphData)
+
     }
     else {
 
         graphData = assignmentsAvg;
-        console.log('groupAssignment', graphData)
+
     }
 
     return (
         <div>
             <div className="text-center">
                 <div className="btn-group flex-wrap">
-                    <button type="button" className="btn btn-secondary" onClick={() => navigate(`/student/Aranka`)}>Aranka</button>
-                    <button type="button" className="btn btn-secondary" onClick={() => navigate(`/student/Evelyn`)}>Evelyn</button>
-                    <button type="button" className="btn btn-secondary" onClick={() => navigate(`/student/Floris`)}>Floris</button>
-                    <button type="button" className="btn btn-secondary" onClick={() => navigate(`/student/Hector`)}>Hector</button>
-                    <button type="button" className="btn btn-secondary" onClick={() => navigate(`/student/Martina`)}>Martina</button>
-                    <button type="button" className="btn btn-secondary" onClick={() => navigate(`/student/Maurits`)}>Maurits</button>
-                    <button type="button" className="btn btn-secondary" onClick={() => navigate(`/student/Rahima`)}>Rahima</button>
-                    <button type="button" className="btn btn-secondary" onClick={() => navigate(`/student/Sandra`)}>Sandra</button>
-                    <button type="button" className="btn btn-secondary" onClick={() => navigate(`/student/Storm`)}>Storm</button>
-                    <button type="button" className="btn btn-secondary" onClick={() => navigate(`/student/Wietske`)}>Wietske</button>
+                    {
+                        [...studentNames].sort().map((student) =>
+                            <button
+                                type="button"
+                                className={`btn ${student === selectedStudentName ? 'active btn-primary' : 'btn-secondary'}`}
+                                onClick={() => {
+                                    if (student === selectedStudentName) {
+                                        setSelectedStudentName(null);
+                                    } else {
+                                        setSelectedStudentName(student)
+                                    }
+                                    navigate(`/student/${student}`)
+                                }}
+                            >
+                                {student}
+                            </button>)
+                    }
                 </div >
 
             </div >
@@ -86,18 +125,17 @@ function StudentChart(props) {
                     domainPadding={{ x: [10, 0], y: 0 }}
                     padding={{ top: 20, bottom: 50, right: 50, left: 30 }}
                     height={170}
-                    containerComponent={<VictoryZoomContainer />}
+
 
                 >
 
                     <VictoryAxis
                         tickLabelComponent={<VictoryLabel angle={45} textAnchor="start" />}
                         style={{
-                            tickLabels: { angle: 45 },
                             axis: { stroke: "#756f6a" },
                             axisLabel: { fontSize: 3, padding: 30 },
                             ticks: { stroke: "grey", size: 5 },
-                            tickLabels: { fontSize: 3, padding: 5 },
+                            tickLabels: { angle: 45, fontSize: 3, padding: 5 },
                         }}
                     />
                     <VictoryAxis
@@ -142,14 +180,9 @@ function StudentChart(props) {
 
                     </VictoryGroup>
                 </VictoryChart>
-                <div className="text-center">
-                    <div className="btn-group flex-wrap">
-                        <button type="button" className="btn btn-danger" onClick={() => navigate(`${window.location.pathname}?filter=difficulty`)}>Filter by difficulty</button>
-                        <button type="button" className="btn btn-dark" onClick={() => navigate(`${window.location.pathname}?filter=fun`)}>Filter by fun</button>
-                        <button type="button" className="btn btn-secondary" onClick={() => navigate(`/`)}>Back to home</button>
+                <SortChartButtons onDifficultyToggle={onDifficultyToggle} onFunToggle={onFunToggle} onHomeClick={onHomeClick} />
 
-                    </div>
-                </div>
+
             </div>
         </div >
     )
