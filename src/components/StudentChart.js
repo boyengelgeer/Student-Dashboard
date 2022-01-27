@@ -23,11 +23,19 @@ function StudentChart() {
     function onDifficultyToggle() {
         setDifficultyChecked(!difficultyChecked)
 
+        if (funChecked) {
+            onFunToggle()
+        }
+
         navigate(`${window.location.pathname}${!difficultyChecked ? '?filter=difficulty' : ''}`)
     }
 
     function onFunToggle() {
         setFunChecked(!funChecked)
+
+        if (difficultyChecked) {
+            onDifficultyToggle()
+        }
 
         navigate(`${window.location.pathname}${!funChecked ? '?filter=fun' : ''}`)
 
